@@ -20,6 +20,14 @@ func (k msgServer) CreateReview(goCtx context.Context, msg *types.MsgCreateRevie
 		Description: msg.Description,
 	}
 
+	// Only allow creating reviews once per account for the same movie
+	reviewList := k.GetAllReview(ctx)
+	for _, individualReview := range reviewList {
+		if individualReview.Creator == review.Creator && individualReview.MovieId == review.MovieId {
+			return nil, sdkerrors.Wrapf(types.ErrReviewDuplicationForOneAccount, "Cannot perform this tx for reviews")
+		}
+	}
+
 	// throw an error when creating a review while the movie doesn’t exist.
 	movieList := k.GetAllMovie(ctx)
 	for i, individualMovie := range movieList {

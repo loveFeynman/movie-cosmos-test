@@ -30,6 +30,12 @@ func TestReviewMsgServerCreate(t *testing.T) {
 	_, err = srv.CreateReview(ctx, &types.MsgCreateReview{Creator: creator, MovieId: 8})
 	require.EqualError(t, err, "Cannot perform this tx for reviews: no such a movie")
 
+	// Only allow creating reviews once per account for the same movie
+	_, err = srv.CreateReview(ctx, &types.MsgCreateReview{Creator: creator, MovieId: 3})
+	require.EqualError(t, err, "Cannot perform this tx for reviews: that account already created a reivew for this movie")
+
+	_, err = srv.CreateReview(ctx, &types.MsgCreateReview{Creator: "B", MovieId: 3})
+	require.NoError(t, err)
 }
 
 func TestReviewMsgServerUpdate(t *testing.T) {
