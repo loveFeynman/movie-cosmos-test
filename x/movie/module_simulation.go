@@ -36,6 +36,18 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDeleteMovie int = 100
 
+	opWeightMsgCreateReview = "op_weight_msg_review"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateReview int = 100
+
+	opWeightMsgUpdateReview = "op_weight_msg_review"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdateReview int = 100
+
+	opWeightMsgDeleteReview = "op_weight_msg_review"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeleteReview int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -58,6 +70,17 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 			},
 		},
 		MovieCount: 2,
+		ReviewList: []types.Review{
+			{
+				Id:      0,
+				Creator: sample.AccAddress(),
+			},
+			{
+				Id:      1,
+				Creator: sample.AccAddress(),
+			},
+		},
+		ReviewCount: 2,
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&movieGenesis)
@@ -112,6 +135,39 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgDeleteMovie,
 		moviesimulation.SimulateMsgDeleteMovie(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgCreateReview int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateReview, &weightMsgCreateReview, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateReview = defaultWeightMsgCreateReview
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateReview,
+		moviesimulation.SimulateMsgCreateReview(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUpdateReview int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateReview, &weightMsgUpdateReview, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdateReview = defaultWeightMsgUpdateReview
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdateReview,
+		moviesimulation.SimulateMsgUpdateReview(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeleteReview int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteReview, &weightMsgDeleteReview, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeleteReview = defaultWeightMsgDeleteReview
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeleteReview,
+		moviesimulation.SimulateMsgDeleteReview(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

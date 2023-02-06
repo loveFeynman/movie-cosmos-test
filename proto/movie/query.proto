@@ -6,6 +6,7 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "movie/params.proto";
 import "movie/movie.proto";
+import "movie/review.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "movie/x/movie/types";
@@ -24,6 +25,16 @@ service Query {
 	// Queries a list of Movie items.
 	rpc MovieAll(QueryAllMovieRequest) returns (QueryAllMovieResponse) {
 		option (google.api.http).get = "/movie/movie/movie";
+	}
+
+// Queries a Review by id.
+	rpc Review(QueryGetReviewRequest) returns (QueryGetReviewResponse) {
+		option (google.api.http).get = "/movie/movie/review/{id}";
+	}
+
+	// Queries a list of Review items.
+	rpc ReviewAll(QueryAllReviewRequest) returns (QueryAllReviewResponse) {
+		option (google.api.http).get = "/movie/movie/review";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -52,6 +63,23 @@ message QueryAllMovieRequest {
 
 message QueryAllMovieResponse {
 	repeated Movie Movie = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetReviewRequest {
+	uint64 id = 1;
+}
+
+message QueryGetReviewResponse {
+	Review Review = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllReviewRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllReviewResponse {
+	repeated Review Review = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

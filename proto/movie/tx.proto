@@ -2,6 +2,7 @@ syntax = "proto3";
 package movie.movie;
 
 import "movie/movie.proto";
+import "movie/review.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "movie/x/movie/types";
@@ -11,6 +12,9 @@ service Msg {
     rpc CreateMovie(MsgCreateMovie) returns (MsgCreateMovieResponse);
   rpc UpdateMovie(MsgUpdateMovie) returns (MsgUpdateMovieResponse);
   rpc DeleteMovie(MsgDeleteMovie) returns (MsgDeleteMovieResponse);
+rpc CreateReview(MsgCreateReview) returns (MsgCreateReviewResponse);
+  rpc UpdateReview(MsgUpdateReview) returns (MsgUpdateReviewResponse);
+  rpc DeleteReview(MsgDeleteReview) returns (MsgDeleteReviewResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -41,5 +45,33 @@ message MsgDeleteMovie {
 }
 
 message MsgDeleteMovieResponse {}
+
+message MsgCreateReview {
+  string creator = 1;
+  uint64 movieId = 2;
+  string ratingUint = 3;
+  string description = 4;
+}
+
+message MsgCreateReviewResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdateReview {
+  string creator = 1;
+  uint64 id = 2;
+  uint64 movieId = 3;
+  string ratingUint = 4;
+  string description = 5;
+}
+
+message MsgUpdateReviewResponse {}
+
+message MsgDeleteReview {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgDeleteReviewResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message

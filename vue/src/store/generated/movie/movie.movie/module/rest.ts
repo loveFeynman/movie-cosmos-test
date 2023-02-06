@@ -25,9 +25,18 @@ export interface MovieMsgCreateMovieResponse {
   id?: string;
 }
 
+export interface MovieMsgCreateReviewResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
 export type MovieMsgDeleteMovieResponse = object;
 
+export type MovieMsgDeleteReviewResponse = object;
+
 export type MovieMsgUpdateMovieResponse = object;
+
+export type MovieMsgUpdateReviewResponse = object;
 
 /**
  * Params defines the parameters for the module.
@@ -49,8 +58,27 @@ export interface MovieQueryAllMovieResponse {
   pagination?: V1Beta1PageResponse;
 }
 
+export interface MovieQueryAllReviewResponse {
+  Review?: MovieReview[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
 export interface MovieQueryGetMovieResponse {
   Movie?: MovieMovie;
+}
+
+export interface MovieQueryGetReviewResponse {
+  Review?: MovieReview;
 }
 
 /**
@@ -59,6 +87,17 @@ export interface MovieQueryGetMovieResponse {
 export interface MovieQueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: MovieParams;
+}
+
+export interface MovieReview {
+  /** @format uint64 */
+  id?: string;
+
+  /** @format uint64 */
+  movieId?: string;
+  ratingUint?: string;
+  description?: string;
+  creator?: string;
 }
 
 export interface ProtobufAny {
@@ -109,13 +148,6 @@ export interface V1Beta1PageRequest {
    * is set.
    */
   count_total?: boolean;
-
-  /**
-   * reverse is set to true if results are to be returned in the descending order.
-   *
-   * Since: cosmos-sdk 0.43
-   */
-  reverse?: boolean;
 }
 
 /**
@@ -345,7 +377,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       "pagination.offset"?: string;
       "pagination.limit"?: string;
       "pagination.count_total"?: boolean;
-      "pagination.reverse"?: boolean;
     },
     params: RequestParams = {},
   ) =>
@@ -384,6 +415,47 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<MovieQueryParamsResponse, RpcStatus>({
       path: `/movie/movie/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryReviewAll
+   * @summary Queries a list of Review items.
+   * @request GET:/movie/movie/review
+   */
+  queryReviewAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<MovieQueryAllReviewResponse, RpcStatus>({
+      path: `/movie/movie/review`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryReview
+   * @summary Queries a Review by id.
+   * @request GET:/movie/movie/review/{id}
+   */
+  queryReview = (id: string, params: RequestParams = {}) =>
+    this.request<MovieQueryGetReviewResponse, RpcStatus>({
+      path: `/movie/movie/review/${id}`,
       method: "GET",
       format: "json",
       ...params,

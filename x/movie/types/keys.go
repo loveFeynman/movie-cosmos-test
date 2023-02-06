@@ -25,3 +25,8 @@ const (
 	MovieKey      = "Movie-value-"
 	MovieCountKey = "Movie-count-"
 )
+
+const (
+	ReviewKey      = "Review-value-"
+	ReviewCountKey = "Review-count-"
+)

@@ -32,6 +32,34 @@ export interface MsgDeleteMovie {
 
 export interface MsgDeleteMovieResponse {}
 
+export interface MsgCreateReview {
+  creator: string;
+  movieId: number;
+  ratingUint: string;
+  description: string;
+}
+
+export interface MsgCreateReviewResponse {
+  id: number;
+}
+
+export interface MsgUpdateReview {
+  creator: string;
+  id: number;
+  movieId: number;
+  ratingUint: string;
+  description: string;
+}
+
+export interface MsgUpdateReviewResponse {}
+
+export interface MsgDeleteReview {
+  creator: string;
+  id: number;
+}
+
+export interface MsgDeleteReviewResponse {}
+
 const baseMsgCreateMovie: object = {
   creator: "",
   title: "",
@@ -482,12 +510,487 @@ export const MsgDeleteMovieResponse = {
   },
 };
 
+const baseMsgCreateReview: object = {
+  creator: "",
+  movieId: 0,
+  ratingUint: "",
+  description: "",
+};
+
+export const MsgCreateReview = {
+  encode(message: MsgCreateReview, writer: Writer = Writer.create()): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.movieId !== 0) {
+      writer.uint32(16).uint64(message.movieId);
+    }
+    if (message.ratingUint !== "") {
+      writer.uint32(26).string(message.ratingUint);
+    }
+    if (message.description !== "") {
+      writer.uint32(34).string(message.description);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgCreateReview {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateReview } as MsgCreateReview;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.movieId = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.ratingUint = reader.string();
+          break;
+        case 4:
+          message.description = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateReview {
+    const message = { ...baseMsgCreateReview } as MsgCreateReview;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.movieId !== undefined && object.movieId !== null) {
+      message.movieId = Number(object.movieId);
+    } else {
+      message.movieId = 0;
+    }
+    if (object.ratingUint !== undefined && object.ratingUint !== null) {
+      message.ratingUint = String(object.ratingUint);
+    } else {
+      message.ratingUint = "";
+    }
+    if (object.description !== undefined && object.description !== null) {
+      message.description = String(object.description);
+    } else {
+      message.description = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgCreateReview): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.movieId !== undefined && (obj.movieId = message.movieId);
+    message.ratingUint !== undefined && (obj.ratingUint = message.ratingUint);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgCreateReview>): MsgCreateReview {
+    const message = { ...baseMsgCreateReview } as MsgCreateReview;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.movieId !== undefined && object.movieId !== null) {
+      message.movieId = object.movieId;
+    } else {
+      message.movieId = 0;
+    }
+    if (object.ratingUint !== undefined && object.ratingUint !== null) {
+      message.ratingUint = object.ratingUint;
+    } else {
+      message.ratingUint = "";
+    }
+    if (object.description !== undefined && object.description !== null) {
+      message.description = object.description;
+    } else {
+      message.description = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgCreateReviewResponse: object = { id: 0 };
+
+export const MsgCreateReviewResponse = {
+  encode(
+    message: MsgCreateReviewResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgCreateReviewResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateReviewResponse,
+    } as MsgCreateReviewResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateReviewResponse {
+    const message = {
+      ...baseMsgCreateReviewResponse,
+    } as MsgCreateReviewResponse;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgCreateReviewResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateReviewResponse>
+  ): MsgCreateReviewResponse {
+    const message = {
+      ...baseMsgCreateReviewResponse,
+    } as MsgCreateReviewResponse;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+};
+
+const baseMsgUpdateReview: object = {
+  creator: "",
+  id: 0,
+  movieId: 0,
+  ratingUint: "",
+  description: "",
+};
+
+export const MsgUpdateReview = {
+  encode(message: MsgUpdateReview, writer: Writer = Writer.create()): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.id !== 0) {
+      writer.uint32(16).uint64(message.id);
+    }
+    if (message.movieId !== 0) {
+      writer.uint32(24).uint64(message.movieId);
+    }
+    if (message.ratingUint !== "") {
+      writer.uint32(34).string(message.ratingUint);
+    }
+    if (message.description !== "") {
+      writer.uint32(42).string(message.description);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgUpdateReview {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateReview } as MsgUpdateReview;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.movieId = longToNumber(reader.uint64() as Long);
+          break;
+        case 4:
+          message.ratingUint = reader.string();
+          break;
+        case 5:
+          message.description = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateReview {
+    const message = { ...baseMsgUpdateReview } as MsgUpdateReview;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    if (object.movieId !== undefined && object.movieId !== null) {
+      message.movieId = Number(object.movieId);
+    } else {
+      message.movieId = 0;
+    }
+    if (object.ratingUint !== undefined && object.ratingUint !== null) {
+      message.ratingUint = String(object.ratingUint);
+    } else {
+      message.ratingUint = "";
+    }
+    if (object.description !== undefined && object.description !== null) {
+      message.description = String(object.description);
+    } else {
+      message.description = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgUpdateReview): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined && (obj.id = message.id);
+    message.movieId !== undefined && (obj.movieId = message.movieId);
+    message.ratingUint !== undefined && (obj.ratingUint = message.ratingUint);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateReview>): MsgUpdateReview {
+    const message = { ...baseMsgUpdateReview } as MsgUpdateReview;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    if (object.movieId !== undefined && object.movieId !== null) {
+      message.movieId = object.movieId;
+    } else {
+      message.movieId = 0;
+    }
+    if (object.ratingUint !== undefined && object.ratingUint !== null) {
+      message.ratingUint = object.ratingUint;
+    } else {
+      message.ratingUint = "";
+    }
+    if (object.description !== undefined && object.description !== null) {
+      message.description = object.description;
+    } else {
+      message.description = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgUpdateReviewResponse: object = {};
+
+export const MsgUpdateReviewResponse = {
+  encode(_: MsgUpdateReviewResponse, writer: Writer = Writer.create()): Writer {
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgUpdateReviewResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateReviewResponse,
+    } as MsgUpdateReviewResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateReviewResponse {
+    const message = {
+      ...baseMsgUpdateReviewResponse,
+    } as MsgUpdateReviewResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateReviewResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateReviewResponse>
+  ): MsgUpdateReviewResponse {
+    const message = {
+      ...baseMsgUpdateReviewResponse,
+    } as MsgUpdateReviewResponse;
+    return message;
+  },
+};
+
+const baseMsgDeleteReview: object = { creator: "", id: 0 };
+
+export const MsgDeleteReview = {
+  encode(message: MsgDeleteReview, writer: Writer = Writer.create()): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.id !== 0) {
+      writer.uint32(16).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgDeleteReview {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDeleteReview } as MsgDeleteReview;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeleteReview {
+    const message = { ...baseMsgDeleteReview } as MsgDeleteReview;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgDeleteReview): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgDeleteReview>): MsgDeleteReview {
+    const message = { ...baseMsgDeleteReview } as MsgDeleteReview;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+};
+
+const baseMsgDeleteReviewResponse: object = {};
+
+export const MsgDeleteReviewResponse = {
+  encode(_: MsgDeleteReviewResponse, writer: Writer = Writer.create()): Writer {
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgDeleteReviewResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeleteReviewResponse,
+    } as MsgDeleteReviewResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDeleteReviewResponse {
+    const message = {
+      ...baseMsgDeleteReviewResponse,
+    } as MsgDeleteReviewResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDeleteReviewResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDeleteReviewResponse>
+  ): MsgDeleteReviewResponse {
+    const message = {
+      ...baseMsgDeleteReviewResponse,
+    } as MsgDeleteReviewResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreateMovie(request: MsgCreateMovie): Promise<MsgCreateMovieResponse>;
   UpdateMovie(request: MsgUpdateMovie): Promise<MsgUpdateMovieResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   DeleteMovie(request: MsgDeleteMovie): Promise<MsgDeleteMovieResponse>;
+  CreateReview(request: MsgCreateReview): Promise<MsgCreateReviewResponse>;
+  UpdateReview(request: MsgUpdateReview): Promise<MsgUpdateReviewResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  DeleteReview(request: MsgDeleteReview): Promise<MsgDeleteReviewResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -516,6 +1019,30 @@ export class MsgClientImpl implements Msg {
     const promise = this.rpc.request("movie.movie.Msg", "DeleteMovie", data);
     return promise.then((data) =>
       MsgDeleteMovieResponse.decode(new Reader(data))
+    );
+  }
+
+  CreateReview(request: MsgCreateReview): Promise<MsgCreateReviewResponse> {
+    const data = MsgCreateReview.encode(request).finish();
+    const promise = this.rpc.request("movie.movie.Msg", "CreateReview", data);
+    return promise.then((data) =>
+      MsgCreateReviewResponse.decode(new Reader(data))
+    );
+  }
+
+  UpdateReview(request: MsgUpdateReview): Promise<MsgUpdateReviewResponse> {
+    const data = MsgUpdateReview.encode(request).finish();
+    const promise = this.rpc.request("movie.movie.Msg", "UpdateReview", data);
+    return promise.then((data) =>
+      MsgUpdateReviewResponse.decode(new Reader(data))
+    );
+  }
+
+  DeleteReview(request: MsgDeleteReview): Promise<MsgDeleteReviewResponse> {
+    const data = MsgDeleteReview.encode(request).finish();
+    const promise = this.rpc.request("movie.movie.Msg", "DeleteReview", data);
+    return promise.then((data) =>
+      MsgDeleteReviewResponse.decode(new Reader(data))
     );
   }
 }

@@ -3,6 +3,7 @@ import * as Long from "long";
 import { util, configure, Writer, Reader } from "protobufjs/minimal";
 import { Params } from "../movie/params";
 import { Movie } from "../movie/movie";
+import { Review } from "../movie/review";
 
 export const protobufPackage = "movie.movie";
 
@@ -10,11 +11,13 @@ export const protobufPackage = "movie.movie";
 export interface GenesisState {
   params: Params | undefined;
   movieList: Movie[];
-  /** this line is used by starport scaffolding # genesis/proto/state */
   movieCount: number;
+  reviewList: Review[];
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  reviewCount: number;
 }
 
-const baseGenesisState: object = { movieCount: 0 };
+const baseGenesisState: object = { movieCount: 0, reviewCount: 0 };
 
 export const GenesisState = {
   encode(message: GenesisState, writer: Writer = Writer.create()): Writer {
@@ -27,6 +30,12 @@ export const GenesisState = {
     if (message.movieCount !== 0) {
       writer.uint32(24).uint64(message.movieCount);
     }
+    for (const v of message.reviewList) {
+      Review.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.reviewCount !== 0) {
+      writer.uint32(40).uint64(message.reviewCount);
+    }
     return writer;
   },
 
@@ -35,6 +44,7 @@ export const GenesisState = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
     message.movieList = [];
+    message.reviewList = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -47,6 +57,12 @@ export const GenesisState = {
         case 3:
           message.movieCount = longToNumber(reader.uint64() as Long);
           break;
+        case 4:
+          message.reviewList.push(Review.decode(reader, reader.uint32()));
+          break;
+        case 5:
+          message.reviewCount = longToNumber(reader.uint64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -58,6 +74,7 @@ export const GenesisState = {
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.movieList = [];
+    message.reviewList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromJSON(object.params);
     } else {
@@ -72,6 +89,16 @@ export const GenesisState = {
       message.movieCount = Number(object.movieCount);
     } else {
       message.movieCount = 0;
+    }
+    if (object.reviewList !== undefined && object.reviewList !== null) {
+      for (const e of object.reviewList) {
+        message.reviewList.push(Review.fromJSON(e));
+      }
+    }
+    if (object.reviewCount !== undefined && object.reviewCount !== null) {
+      message.reviewCount = Number(object.reviewCount);
+    } else {
+      message.reviewCount = 0;
     }
     return message;
   },
@@ -88,12 +115,22 @@ export const GenesisState = {
       obj.movieList = [];
     }
     message.movieCount !== undefined && (obj.movieCount = message.movieCount);
+    if (message.reviewList) {
+      obj.reviewList = message.reviewList.map((e) =>
+        e ? Review.toJSON(e) : undefined
+      );
+    } else {
+      obj.reviewList = [];
+    }
+    message.reviewCount !== undefined &&
+      (obj.reviewCount = message.reviewCount);
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.movieList = [];
+    message.reviewList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromPartial(object.params);
     } else {
@@ -108,6 +145,16 @@ export const GenesisState = {
       message.movieCount = object.movieCount;
     } else {
       message.movieCount = 0;
+    }
+    if (object.reviewList !== undefined && object.reviewList !== null) {
+      for (const e of object.reviewList) {
+        message.reviewList.push(Review.fromPartial(e));
+      }
+    }
+    if (object.reviewCount !== undefined && object.reviewCount !== null) {
+      message.reviewCount = object.reviewCount;
+    } else {
+      message.reviewCount = 0;
     }
     return message;
   },
