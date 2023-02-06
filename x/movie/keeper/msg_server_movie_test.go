@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"strconv"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -13,10 +14,14 @@ func TestMovieMsgServerCreate(t *testing.T) {
 	srv, ctx := setupMsgServer(t)
 	creator := "A"
 	for i := 0; i < 5; i++ {
-		resp, err := srv.CreateMovie(ctx, &types.MsgCreateMovie{Creator: creator})
+		resp, err := srv.CreateMovie(ctx, &types.MsgCreateMovie{Creator: creator, Title: "Movie Title " + strconv.Itoa(i)})
 		require.NoError(t, err)
 		require.Equal(t, i, int(resp.Id))
 	}
+
+	//  throw an error when creating a duplicate movie with the same title.
+	_, err := srv.CreateMovie(ctx, &types.MsgCreateMovie{Creator: creator, Title: "Movie Title 3"})
+	require.EqualError(t, err, "Cannot perform this tx: title duplication error")
 }
 
 func TestMovieMsgServerUpdate(t *testing.T) {
