@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"movie/x/movie/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"movie/x/movie/types"
 )
 
 func (k msgServer) CreateReview(goCtx context.Context, msg *types.MsgCreateReview) (*types.MsgCreateReviewResponse, error) {
@@ -17,6 +18,17 @@ func (k msgServer) CreateReview(goCtx context.Context, msg *types.MsgCreateRevie
 		MovieId:     msg.MovieId,
 		RatingUint:  msg.RatingUint,
 		Description: msg.Description,
+	}
+
+	// throw an error when creating a review while the movie doesn’t exist.
+	movieList := k.GetAllMovie(ctx)
+	for i, individualMovie := range movieList {
+		if individualMovie.Id == review.MovieId {
+			break
+		}
+		if i == len(movieList)-1 {
+			return nil, sdkerrors.Wrapf(types.ErrNoSuchMoive, "Cannot perform this tx for reviews")
+		}
 	}
 
 	id := k.AppendReview(

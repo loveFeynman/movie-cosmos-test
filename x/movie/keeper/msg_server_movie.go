@@ -24,7 +24,7 @@ func (k msgServer) CreateMovie(goCtx context.Context, msg *types.MsgCreateMovie)
 	movieList := k.GetAllMovie(ctx)
 	for _, individualMovie := range movieList {
 		if individualMovie.Title == movie.Title {
-			return nil, sdkerrors.Wrapf(types.ErrDuplicationTitle, "Cannot perform this tx")
+			return nil, sdkerrors.Wrapf(types.ErrDuplicationTitle, "Cannot perform this tx for movie creations")
 		}
 	}
 

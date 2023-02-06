@@ -21,7 +21,7 @@ func TestMovieMsgServerCreate(t *testing.T) {
 
 	//  throw an error when creating a duplicate movie with the same title.
 	_, err := srv.CreateMovie(ctx, &types.MsgCreateMovie{Creator: creator, Title: "Movie Title 3"})
-	require.EqualError(t, err, "Cannot perform this tx: title duplication error")
+	require.EqualError(t, err, "Cannot perform this tx for movie creations: title duplication error")
 }
 
 func TestMovieMsgServerUpdate(t *testing.T) {
