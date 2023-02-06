@@ -20,3 +20,8 @@ const (
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
+
+const (
+	MovieKey      = "Movie-value-"
+	MovieCountKey = "Movie-count-"
+)

@@ -1,6 +1,12 @@
 /* eslint-disable */
-import { Reader, Writer } from "protobufjs/minimal";
+import { Reader, util, configure, Writer } from "protobufjs/minimal";
+import * as Long from "long";
 import { Params } from "../movie/params";
+import { Movie } from "../movie/movie";
+import {
+  PageRequest,
+  PageResponse,
+} from "../cosmos/base/query/v1beta1/pagination";
 
 export const protobufPackage = "movie.movie";
 
@@ -11,6 +17,23 @@ export interface QueryParamsRequest {}
 export interface QueryParamsResponse {
   /** params holds all the parameters of this module. */
   params: Params | undefined;
+}
+
+export interface QueryGetMovieRequest {
+  id: number;
+}
+
+export interface QueryGetMovieResponse {
+  Movie: Movie | undefined;
+}
+
+export interface QueryAllMovieRequest {
+  pagination: PageRequest | undefined;
+}
+
+export interface QueryAllMovieResponse {
+  Movie: Movie[];
+  pagination: PageResponse | undefined;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -110,10 +133,284 @@ export const QueryParamsResponse = {
   },
 };
 
+const baseQueryGetMovieRequest: object = { id: 0 };
+
+export const QueryGetMovieRequest = {
+  encode(
+    message: QueryGetMovieRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryGetMovieRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryGetMovieRequest } as QueryGetMovieRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetMovieRequest {
+    const message = { ...baseQueryGetMovieRequest } as QueryGetMovieRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetMovieRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryGetMovieRequest>): QueryGetMovieRequest {
+    const message = { ...baseQueryGetMovieRequest } as QueryGetMovieRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+};
+
+const baseQueryGetMovieResponse: object = {};
+
+export const QueryGetMovieResponse = {
+  encode(
+    message: QueryGetMovieResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.Movie !== undefined) {
+      Movie.encode(message.Movie, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryGetMovieResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryGetMovieResponse } as QueryGetMovieResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.Movie = Movie.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetMovieResponse {
+    const message = { ...baseQueryGetMovieResponse } as QueryGetMovieResponse;
+    if (object.Movie !== undefined && object.Movie !== null) {
+      message.Movie = Movie.fromJSON(object.Movie);
+    } else {
+      message.Movie = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetMovieResponse): unknown {
+    const obj: any = {};
+    message.Movie !== undefined &&
+      (obj.Movie = message.Movie ? Movie.toJSON(message.Movie) : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetMovieResponse>
+  ): QueryGetMovieResponse {
+    const message = { ...baseQueryGetMovieResponse } as QueryGetMovieResponse;
+    if (object.Movie !== undefined && object.Movie !== null) {
+      message.Movie = Movie.fromPartial(object.Movie);
+    } else {
+      message.Movie = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllMovieRequest: object = {};
+
+export const QueryAllMovieRequest = {
+  encode(
+    message: QueryAllMovieRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryAllMovieRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAllMovieRequest } as QueryAllMovieRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllMovieRequest {
+    const message = { ...baseQueryAllMovieRequest } as QueryAllMovieRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllMovieRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryAllMovieRequest>): QueryAllMovieRequest {
+    const message = { ...baseQueryAllMovieRequest } as QueryAllMovieRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllMovieResponse: object = {};
+
+export const QueryAllMovieResponse = {
+  encode(
+    message: QueryAllMovieResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    for (const v of message.Movie) {
+      Movie.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryAllMovieResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAllMovieResponse } as QueryAllMovieResponse;
+    message.Movie = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.Movie.push(Movie.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllMovieResponse {
+    const message = { ...baseQueryAllMovieResponse } as QueryAllMovieResponse;
+    message.Movie = [];
+    if (object.Movie !== undefined && object.Movie !== null) {
+      for (const e of object.Movie) {
+        message.Movie.push(Movie.fromJSON(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllMovieResponse): unknown {
+    const obj: any = {};
+    if (message.Movie) {
+      obj.Movie = message.Movie.map((e) => (e ? Movie.toJSON(e) : undefined));
+    } else {
+      obj.Movie = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllMovieResponse>
+  ): QueryAllMovieResponse {
+    const message = { ...baseQueryAllMovieResponse } as QueryAllMovieResponse;
+    message.Movie = [];
+    if (object.Movie !== undefined && object.Movie !== null) {
+      for (const e of object.Movie) {
+        message.Movie.push(Movie.fromPartial(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
+  /** Queries a Movie by id. */
+  Movie(request: QueryGetMovieRequest): Promise<QueryGetMovieResponse>;
+  /** Queries a list of Movie items. */
+  MovieAll(request: QueryAllMovieRequest): Promise<QueryAllMovieResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -126,6 +423,22 @@ export class QueryClientImpl implements Query {
     const promise = this.rpc.request("movie.movie.Query", "Params", data);
     return promise.then((data) => QueryParamsResponse.decode(new Reader(data)));
   }
+
+  Movie(request: QueryGetMovieRequest): Promise<QueryGetMovieResponse> {
+    const data = QueryGetMovieRequest.encode(request).finish();
+    const promise = this.rpc.request("movie.movie.Query", "Movie", data);
+    return promise.then((data) =>
+      QueryGetMovieResponse.decode(new Reader(data))
+    );
+  }
+
+  MovieAll(request: QueryAllMovieRequest): Promise<QueryAllMovieResponse> {
+    const data = QueryAllMovieRequest.encode(request).finish();
+    const promise = this.rpc.request("movie.movie.Query", "MovieAll", data);
+    return promise.then((data) =>
+      QueryAllMovieResponse.decode(new Reader(data))
+    );
+  }
 }
 
 interface Rpc {
@@ -135,6 +448,16 @@ interface Rpc {
     data: Uint8Array
   ): Promise<Uint8Array>;
 }
+
+declare var self: any | undefined;
+declare var window: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
+})();
 
 type Builtin = Date | Function | Uint8Array | string | number | undefined;
 export type DeepPartial<T> = T extends Builtin
@@ -146,3 +469,15 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function longToNumber(long: Long): number {
+  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (util.Long !== Long) {
+  util.Long = Long as any;
+  configure();
+}

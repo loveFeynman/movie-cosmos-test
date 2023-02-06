@@ -4,9 +4,15 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
+import { MsgDeleteMovie } from "./types/movie/tx";
+import { MsgUpdateMovie } from "./types/movie/tx";
+import { MsgCreateMovie } from "./types/movie/tx";
 
 
 const types = [
+  ["/movie.movie.MsgDeleteMovie", MsgDeleteMovie],
+  ["/movie.movie.MsgUpdateMovie", MsgUpdateMovie],
+  ["/movie.movie.MsgCreateMovie", MsgCreateMovie],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -39,6 +45,9 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
+    msgDeleteMovie: (data: MsgDeleteMovie): EncodeObject => ({ typeUrl: "/movie.movie.MsgDeleteMovie", value: MsgDeleteMovie.fromPartial( data ) }),
+    msgUpdateMovie: (data: MsgUpdateMovie): EncodeObject => ({ typeUrl: "/movie.movie.MsgUpdateMovie", value: MsgUpdateMovie.fromPartial( data ) }),
+    msgCreateMovie: (data: MsgCreateMovie): EncodeObject => ({ typeUrl: "/movie.movie.MsgCreateMovie", value: MsgCreateMovie.fromPartial( data ) }),
     
   };
 };
